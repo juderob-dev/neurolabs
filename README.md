@@ -1,165 +1,86 @@
 # Neurolabs Image Recognition Pipeline & Analytics
 
-This project implements an end-to-end computer vision pipeline using the **Neurolabs Image Recognition API**.  
+This project implements an end-to-end computer vision pipeline using the
+**Neurolabs Image Recognition API**.\
 It covers the full workflow:
 
-1. Fetch image-recognition tasks  
-2. Submit image URLs to tasks  
-3. Retrieve per-image detection results  
-4. Store JSON results locally  
-5. Normalise COCO-format outputs into a DataFrame  
-6. Join detections with `/catalog-items` metadata  
-7. Build analytics (product distribution, brand distribution, confidence stats)  
-8. Export charts and cleaned datasets
-
-The repository contains a **pipeline**, **utilities**, and a full **Jupyter analytics notebook**.
-
----
+1.  Fetch image-recognition tasks\
+2.  Submit image URLs to tasks\
+3.  Retrieve per-image detection results\
+4.  Store JSON results locally\
+5.  Normalise COCO-format outputs into a DataFrame\
+6.  Join detections with `/catalog-items` metadata\
+7.  Build analytics (product distribution, brand distribution,
+    confidence stats)\
+8.  Export charts and cleaned datasets
 
 ## 🚀 Features
 
-### ✔ Image Recognition Pipeline
-- List tasks using `/image-recognition/tasks`
-- Submit URLs via `/tasks/{task_uuid}/urls`
-- Retrieve result UUIDs
-- Fetch per-image `/results/{result_uuid}`
-- Save JSON responses to `data/results_json/...`
+-   Image recognition API pipeline
+-   JSON saving
+-   COCO parsing
+-   Catalog metadata enrichment
+-   Analytics + chart generation
+-   Clean folder structure
 
-### ✔ Data Normalisation
-- Parse COCO-style annotations
-- Map `category_id` → product UUID via `categories[].neurolabs.productUuid`
-- Extract bounding boxes, scores, metadata
-- Build pandas DataFrames
+## 📁 Project Structure
 
-### ✔ Catalog Join
-- Fetch `/catalog-items`
-- Join catalog product metadata to detection results
-- Unified dataset: product name, brand, barcode, size, packaging, image URL, bbox, score
+    NEUROLABS/
+    ├── .env
+    ├── requirements.txt
+    ├── README.md
+    ├── src/
+    │   ├── api_client.py
+    │   ├── pipeline.py
+    │   ├── utils.py
+    ├── data/
+    │   └── results_json/
+    ├── notebooks/
+    │   ├── analysis.ipynb
+    │   ├── analysis_utils.py
+    │   ├── chart_generator.py
+    │   └── outputs/
+    │       ├── df_joined.csv
+    │       ├── df_products_only.csv
+    │       └── charts/
 
-### ✔ Analytics
-- Top products
-- Brand distribution
-- Confidence score histogram
-- Lowest-confidence detections
-- Bounding box area distribution
-- Save charts as `.png`
+## 🔧 Installation
 
----
+### 1. Clone repo
 
+    git clone https://github.com/juderob-dev/neurolabs.git
+    cd neurolabs
 
-## Project Structure
+### 2. Create environment
 
-NEUROLABS/
-│
-├── src/
-│   ├── api_client.py          # API calls to Neurolabs
-│   ├── pipeline.py            # Full inference pipeline
-│   └── utils.py               # CSV loading, URL cleaning, helpers
-│
-├── data/
-│   └── results_json/          # Raw JSON inference outputs
-│
-├── notebooks/
-│   ├── analysis.ipynb         # Main analysis & visualization notebook
-│   ├── analysis_utils.py      # JSON → DataFrame extraction helpers
-│   ├── chart_generator.py     # Functions to automatically generate & save charts
-│   └── outputs/
-│       ├── df_joined.csv
-│       ├── df_products_only.csv
-│       └── charts/
-│           ├── top_products.png
-│           ├── confidence_hist.png
-│           └── ...
-│
-├── .env                       # API key (not committed)
-├── requirements.txt
-└── README.md
+    python3 -m venv .venv
+    source .venv/bin/activate
 
+### 3. Install dependencies
 
-🧩 Architecture (High-Level Flow)
-                        +--------------------------+
-                        |  /image-recognition/tasks |
-                        +------------+-------------+
-                                     |
-                         Fetch Task UUIDs
-                                     |
-                                     v
-+--------------------+     +---------------------+
-|  image_urls.csv    | --> | Submit URLs to Task |
-+--------------------+     +---------------------+
-                                     |
-                                     v
-                        +------------------------------+
-                        | Retrieve per-image results   |
-                        | /tasks/{uuid}/results/{rid}  |
-                        +---------------+--------------+
-                                        |
-                                Save result JSON files
-                                        |
-                                        v
-                      +-------------------------------+
-                      |  Parse JSON → DataFrame       |
-                      |  (COCO annotations + catalog) |
-                      +-------------------------------+
-                                        |
-                                        v
-                           +----------------------+
-                           |   Analytics & Charts |
-                           +----------------------+
+    pip install -r requirements.txt
 
-🔧 Setup & Installation
-1. Clone the repo
-git clone <repo-url>
-cd neurolabs
+### 4. Create `.env`
 
-2. Create a virtual environment
-python3 -m venv .venv
-source .venv/bin/activate
+    NEUROLABS_API_KEY=your_api_key_here
+    BASE_URL=add_base_here
 
-3. Install requirements
-pip install -r requirements.txt
+## ▶️ Run Pipeline
 
-4. Create .env in project root
-NEUROLABS_API_KEY=your_key_here
+    python src/main.py
 
-🏗 Running the Inference Pipeline
-
-The inference pipeline fetches tasks, submits images, retrieves detection results, and saves JSON files.
-
-Run:
-
-python src/main.py
-
-
-This will:
-
-✔ load URLs
-✔ clean them (removing < >)
-✔ submit them in batches
-✔ save JSON results in data/results_json/...
-
-📊 Running Analytics (Jupyter Notebook)
+## 📊 Run Analytics
 
 Open:
 
-notebooks/analysis.ipynb
+    notebooks/analysis.ipynb
 
-Select Run All Cells
+    Run All Cells
 
-All outputs appear in:
+## 📈 Outputs
 
-notebooks/outputs/
-
-📈 Example Outputs
-Product Distribution
-
-(saved to outputs/charts/top_products.png)
-
-Confidence Histogram
-
-(saved to outputs/charts/confidence_hist.png)
-
-Brand Pie Chart
-
-(saved to outputs/charts/brand_pie.png)
-
+-   top_products.png
+-   brand_distribution.png
+-   confidence_hist.png
+-   df_joined.csv
+-   df_products_only.csv
