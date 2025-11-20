@@ -2,3 +2,5 @@ python-dotenv
 requests
 pillow
 matplotlib
+ipykernel
+pandas
