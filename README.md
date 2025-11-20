@@ -70,10 +70,6 @@ It covers the full workflow:
     input_urls/ and results_json/ folder
     In the input_urls folder add your cooler.csv and your ambient.csv
 
-    In your results_json folder create 2 more folders
-    ambient_results/ and cooler_results/
-
-
 
 ## ▶️ Run Pipeline
 
