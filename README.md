@@ -1,80 +1,51 @@
-Neurolabs Image Recognition Pipeline & Analytics
+# Neurolabs Image Recognition Pipeline & Analytics
 
-This project implements an end-to-end workflow for running image inference using the Neurolabs API, saving per-image results, and performing product-level analytics & visualizations.
-It covers the full pipeline:
+This project implements an end-to-end computer vision pipeline using the **Neurolabs Image Recognition API**.  
+It covers the full workflow:
 
-Fetch tasks
+1. Fetch image-recognition tasks  
+2. Submit image URLs to tasks  
+3. Retrieve per-image detection results  
+4. Store JSON results locally  
+5. Normalise COCO-format outputs into a DataFrame  
+6. Join detections with `/catalog-items` metadata  
+7. Build analytics (product distribution, brand distribution, confidence stats)  
+8. Export charts and cleaned datasets
 
-Submit image URLs
+The repository contains a **pipeline**, **utilities**, and a full **Jupyter analytics notebook**.
 
-Retrieve inference results
+---
 
-Store results locally
+## 🚀 Features
 
-Join detections with catalog metadata
+### ✔ Image Recognition Pipeline
+- List tasks using `/image-recognition/tasks`
+- Submit URLs via `/tasks/{task_uuid}/urls`
+- Retrieve result UUIDs
+- Fetch per-image `/results/{result_uuid}`
+- Save JSON responses to `data/results_json/...`
 
-Build analytics (pie charts, bar charts, histograms)
+### ✔ Data Normalisation
+- Parse COCO-style annotations
+- Map `category_id` → product UUID via `categories[].neurolabs.productUuid`
+- Extract bounding boxes, scores, metadata
+- Build pandas DataFrames
 
-Export cleaned datasets & charts
+### ✔ Catalog Join
+- Fetch `/catalog-items`
+- Join catalog product metadata to detection results
+- Unified dataset: product name, brand, barcode, size, packaging, image URL, bbox, score
 
-🚀 Project Overview
+### ✔ Analytics
+- Top products
+- Brand distribution
+- Confidence score histogram
+- Lowest-confidence detections
+- Bounding box area distribution
+- Save charts as `.png`
 
-This repository contains:
+---
 
-A Python backend pipeline (src/)
-
-A complete analysis workflow in Jupyter (notebooks/)
-
-Stored inference results (data/)
-
-Exported analytics (notebooks/outputs/)
-
-Chart generation utilities (chart_generator.py)
-
-It is designed to be clean, modular, and easy to extend.
-
-📦 Features
-✔ Image Recognition Pipeline
-
-Load image URLs from CSV
-
-Submit URLs to Neurolabs /image-recognition/tasks/{uuid}/urls
-
-Retrieve per-image COCO-formatted results
-
-Save each result as JSON
-
-✔ Data Normalization
-
-Extract bounding boxes, categories, confidence scores
-
-Map COCO category_id → catalog productUuid
-
-Build clean pandas DataFrames
-
-✔ Catalog Join
-
-Fetch /catalog-items
-
-Join detection results with official product metadata (name, brand, etc.)
-
-✔ Analytics
-
-Product distribution
-
-Brand distribution
-
-Model confidence statistics
-
-Histogram & bar charts
-
-Output tables and CSV files
-
-✔ Reporting
-
-All charts saved to notebooks/outputs/charts
-
-Clean merged dataset saved to df_joined.csv
 
 ## Project Structure
 
