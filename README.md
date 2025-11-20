@@ -65,6 +65,16 @@ It covers the full workflow:
     NEUROLABS_API_KEY=your_api_key_here
     BASE_URL=add_base_here
 
+### 4. Create `data/` folder 
+    Create 2 folders in the data folder
+    input_urls/ and results_json/ folder
+    In the input_urls folder add your cooler.csv and your ambient.csv
+
+    In your results_json folder create 2 more folders
+    ambient_results/ and cooler_results/
+
+
+
 ## ▶️ Run Pipeline
 
     python src/main.py
