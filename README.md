@@ -76,7 +76,8 @@ All charts saved to notebooks/outputs/charts
 
 Clean merged dataset saved to df_joined.csv
 
-🗂 Project Structure
+## Project Structure
+
 NEUROLABS/
 │
 ├── src/
@@ -102,6 +103,7 @@ NEUROLABS/
 ├── .env                       # API key (not committed)
 ├── requirements.txt
 └── README.md
+
 
 🧩 Architecture (High-Level Flow)
                         +--------------------------+
