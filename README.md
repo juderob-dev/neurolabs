@@ -1,17 +1,17 @@
 # Neurolabs Image Recognition Pipeline & Analytics
 
 This project implements an end-to-end computer vision pipeline using the
-**Neurolabs Image Recognition API**.\
+**Neurolabs Image Recognition API**.
 It covers the full workflow:
 
-1.  Fetch image-recognition tasks\
-2.  Submit image URLs to tasks\
-3.  Retrieve per-image detection results\
-4.  Store JSON results locally\
-5.  Normalise COCO-format outputs into a DataFrame\
-6.  Join detections with `/catalog-items` metadata\
+1.  Fetch image-recognition tasks
+2.  Submit image URLs to tasks
+3.  Retrieve per-image detection results
+4.  Store JSON results locally
+5.  Normalise COCO-format outputs into a DataFrame
+6.  Join detections with `/catalog-items` metadata
 7.  Build analytics (product distribution, brand distribution,
-    confidence stats)\
+    confidence stats)
 8.  Export charts and cleaned datasets
 
 ## 🚀 Features
