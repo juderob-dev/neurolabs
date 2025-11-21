@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from utils import batch_list
 import time
 
+
 load_dotenv(os.path.join(os.path.dirname(__file__), "..", ".env"))
 
 
