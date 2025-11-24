@@ -6,109 +6,104 @@ As part of this assignment, I implemented a client workflow that
 interacts with the Neurolabs Image Recognition API. The workflow
 included:
 
--   Retrieving available task UUIDs using `/image-recognition/tasks`
--   Loading image URLs from ambient.csv (8 URLs) and cooler.csv (2 URLs)
--   Cleaning and validating URLs before submission
--   Submitting URLs in controlled batches to avoid rate limiting
--   Polling for result UUIDs returned by the API
--   Fetching each result individually using `/results/{result_uuid}`
--   Storing all outputs as JSON files for further analysis
+1.  Retrieving available task UUIDs using `/image-recognition/tasks`
+2.  Preparing and cleaning image URLs for submission
+3.  Submitting URLs in controlled batches to avoid rate limiting
+4.  Polling for result UUIDs returned by the API
+5.  Fetching each result individually using `/results/{result_uuid}`
+6.  Storing all outputs as JSON files for further analysis
 
-All ten images were successfully processed.
+All four images submitted were processed successfully.
+
+------------------------------------------------------------------------
 
 ## 2. Limitations
 
 The work was constrained primarily by API behaviour, request handling,
-and dataset constraints rather than model performance.
+and testing limitations rather than model or dataset performance.
 
 ### API Limitations
 
-#### 429 Too Many Requests Errors
+-   **429 Too Many Requests Errors**\
+    Submitting too many URLs at once triggered rate limiting.\
+    To avoid this, batching was restricted to size **2**, with **3 retry
+    attempts** and a **15-second delay** between retries.
 
-Submitting too many URLs or polling too frequently triggered rate
-limiting.
+-  " **Duplicate Result UUIDs**\
+    Two of the submitted images produced **duplicate result UUIDs**,
+    meaning multiple results were generated for the same input URL.\
+    The pipeline had to handle this by detecting duplicates and
+    processing all associated results.\
+    This added extra polling calls and additional JSON output files." dont think this was true 
 
-To mitigate this: - Batch size was restricted to 2 URLs - A 15-second
-delay was enforced after each batch - Retries used exponential backoff
-(`2**attempt`) - Maximum retries per request: 3
+-   **Per-result retrieval requirement**\
+    `/results/{result_uuid}` must be called for each UUID individually.\
+    No batch results endpoint exists, increasing API load and
+    contributing to rate-limit sensitivity.
 
-This stabilised submissions and prevented repeated 429 responses.
-
-#### Per-result retrieval requirement
-
-`/results/{result_uuid}` must be queried one at a time.\
-Since no batch results endpoint exists, this significantly increases API
-load and contributes to rate-limit sensitivity.
-
-#### Processing time variability
-
-Inference completion time varied from image to image, requiring repeated
-polling with fixed delays to ensure results were ready.
+-   **Processing time variability**\
+    Inference completion time was inconsistent, requiring polling with
+    fixed delays.
 
 ### Implementation Limitations
 
-#### Simplified Exponential Backoff
+-   **Simplified Exponential Backoff**\
+    While exponential backoff was implemented, simplified values were
+    used:
 
-While exponential backoff was implemented, it was simplified for speed
-during testing:
+    -   Batch size: **2**
+    -   Retries: **3**
+    -   Delay: **15 seconds**
 
--   Batch size: 2
--   Retries: 3
--   Fixed 15-second wait between batches
--   Exponential backoff only applied on retries
+    These constants were chosen to avoid long waits during testing but
+    do not represent a full exponential strategy.
 
-A production system would require: - Dynamic jitter - Longer maximum
-waiting periods - More aggressive scaling of delays
+-   **URL Formatting Issues**\
+    Several URLs contained angle brackets (`< >`) or extra characters.\
+    Submissions only succeeded after cleaning the URLs.
 
-#### URL Formatting Issues
+### Testing Constraints (Given as Part of the Assignment)
 
-Some URLs contained invalid characters such as `< >` or stray
-whitespace.\
-These caused API submission failures until cleaned.
+-   The four images submitted were identical.
+-   Dataset had fixed lighting, angle, and product arrangement.
+-   These constraints limited the ability to test API behaviour under
+    diverse conditions.
 
-This required a preprocessing step to normalise and validate all URLs.
-
-### Testing Constraints
-
-These constraints came from the dataset provided: - Image URLs were
-fixed and sourced directly from ambient.csv and cooler.csv - A total of
-10 URLs were available (8 ambient, 2 cooler) - No variation existed in
-lighting, angle, perspective, or product arrangement
-
-Because of this, the evaluation focused on API workflow behaviour rather
-than model robustness across diverse scenarios.
+------------------------------------------------------------------------
 
 ## 3. Assumptions
 
 ### API Behaviour Assumptions
 
--   Task UUIDs remain valid throughout the session
--   API responses follow the documented schema
--   A "PROCESSED" status indicates a complete and usable result
+-   Task UUIDs remain valid throughout the session.
+-   API endpoints return consistent response schemas as documented.
+-   A status of `"PROCESSED"` indicates a complete and valid result.
 
 ### Request Handling Assumptions
 
--   Small batches (size 2) help prevent rate-limiting errors
--   3 retries with exponential backoff and 15-second batch delays allow
-    recovery from temporary 429 responses
--   A cleaned URL accepted by the API is considered a valid input image
+-   Submitting URLs in small batches (size 2) is the optimal strategy to
+    avoid rate limiting.
+-   A retry count of 3, combined with 15-second delays, is sufficient to
+    recover from temporary rate-limit events.
+-   If the API accepts a cleaned URL, it is considered valid input.
 
 ### Data Handling Assumptions
 
--   JSON responses can be stored directly without additional validation
--   Missing modality fields or score values are expected and do not
-    indicate a failure
+-   JSON responses can be stored locally without modification.
+-   Missing fields in the response (e.g., missing modalities) are
+    expected and do not represent API failure.
+
+------------------------------------------------------------------------
 
 ## 4. Conclusion
 
 The API workflow was successfully executed end-to-end, with results
-reliably returned after implementing controlled batching, URL cleaning,
-and a simple retry strategy.
+reliably returned after implementing controlled batching and a simple
+backoff strategy.\
+Most limitations encountered were related to API request constraints
+(429 errors), duplicate result UUIDs, and the testing configuration
+provided in the task.
 
-The most significant challenges involved: - Rate limiting (429 errors) -
-URL formatting issues - The limited variety of the provided dataset
-
-Despite these constraints, the pipeline demonstrated a robust
-interaction with the Neurolabs Image Recognition API --- including error
-handling, retries, result retrieval, and structured JSON output suitable
-for downstream analysis.
+The pipeline demonstrates a working, robust interaction with the
+Neurolabs Image Recognition API, including error handling, retries, and
+structured result storage.

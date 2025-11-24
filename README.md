@@ -69,6 +69,7 @@ It covers the full workflow:
     Create 2 folders in the data folder
     input_urls/ and results_json/ folder
     In the input_urls folder add your cooler.csv and your ambient.csv
+    DOUBLE CHECK YOU ARE USING VENV FOR BOTH NOTEBOOK AND SCRIPT
 
 
 ## ▶️ Run Pipeline
